@@ -65,3 +65,9 @@
     If neither email nor phoneNumber is provided, return a 400 error response.
     
     For other server errors, return a 500 error response.
+
+#### To Run
+
+```npm i```
+```npm run build```
+```npm run start```
