@@ -6,9 +6,9 @@ export type Contact = {
   email?: string;
   linked_id?: Number;
   link_precedence: LinkPrecedence;
-  created_at?: string;
-  updated_at?: string;
-  deleted_at?: string;
+  created_at?: any ;
+  updated_at?: any;
+  deleted_at?: any;
 };
 
 export type ContactResponse = {
