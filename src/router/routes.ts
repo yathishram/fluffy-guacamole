@@ -15,7 +15,7 @@ export class Routes {
     }
 
     identityRoutes = () => { 
-        this.identityRouter.post('/contacts', this.identityController.handleContacts);
+        this.identityRouter.post('/', this.identityController.handleContacts);
         this.app.use('/identity', this.identityRouter);
     }
 

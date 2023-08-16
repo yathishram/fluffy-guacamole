@@ -1,11 +1,9 @@
-import { pool } from "../../config/dbConfig";
-import { Contact } from "../../types/common.types";
+import { pool } from '../../config/dbConfig';
+import { Contact } from '../../types/common.types';
 
-
-export class IdentityQuery { 
-
-    getContacts = async (phoneNumber?: string, email?: string) => { 
-        const query = `
+export class IdentityQuery {
+  getContacts = async (phoneNumber?: string, email?: string) => {
+    const query = `
         WITH RECURSIVE linked_contacts AS (
             SELECT id, phone_number, email, linked_id, link_precedence, created_at, updated_at
             FROM contact
@@ -20,75 +18,70 @@ export class IdentityQuery {
         
         SELECT * FROM linked_contacts;
         `;
-    
-        const values = [phoneNumber, email];
-        
-        try {
-            const { rows } = await pool.query(query, values);
-            return { contactsData: rows };
-        } catch(error) { 
-            console.log(error);
-            return { error };
-        }
+
+    const values = [phoneNumber, email];
+
+    try {
+      const { rows } = await pool.query(query, values);
+      return { contactsData: rows };
+    } catch (error) {
+      console.log(error);
+      return { error };
     }
+  };
 
-
-    addPrimaryContact = async (phoneNumber: string, email: string) => { 
-        const query = `
+  addPrimaryContact = async (phoneNumber: string, email: string) => {
+    const query = `
             INSERT INTO contact(phone_number, email, linked_id, link_precedence)
             VALUES($1, $2, $3, $4)
             RETURNING *;
         `;
-    
-        const values = [phoneNumber, email, null, 'primary'];
-        
-        try {
-            const { rows } = await pool.query(query, values);
-            return { primaryContactData: rows };
-        } catch(error) { 
-            console.log(error);
-            return { error };
-        }
-    }
 
-    addSecondaryContact = async (phoneNumber: string, email: string, linkedId: Number) => { 
-        const query = `
+    const values = [phoneNumber, email, null, 'primary'];
+
+    try {
+      const { rows } = await pool.query(query, values);
+      return { primaryContactData: rows };
+    } catch (error) {
+      console.log(error);
+      return { error };
+    }
+  };
+
+  addSecondaryContact = async (phoneNumber: string, email: string, linkedId: Number) => {
+    const query = `
             INSERT INTO contact(phone_number, email, linked_id, link_precedence)
             VALUES($1, $2, $3, $4)
             RETURNING *;
         `;
-    
-        const values = [phoneNumber, email, linkedId, 'secondary'];
-        
-        try {
-            const { rows } = await pool.query(query, values);
-            return { secondaryContactData: rows };
-        } catch(error) { 
-            console.log(error);
-            return { error };
-        }
-    }
 
-    updateContactToSecondary = async (contactId: Number, linkedId: Number) => { 
-        const query = `
+    const values = [phoneNumber, email, linkedId, 'secondary'];
+
+    try {
+      const { rows } = await pool.query(query, values);
+      return { secondaryContactData: rows };
+    } catch (error) {
+      console.log(error);
+      return { error };
+    }
+  };
+
+  updateContactToSecondary = async (contactId: Number, linkedId: Number) => {
+    const query = `
             UPDATE contact
             SET linked_id = $1, link_precedence = $2
             WHERE id = $3
             RETURNING *;
         `;
-    
-        const values = [linkedId, 'secondary', contactId];
-        
-        try {
-            const { rows } = await pool.query(query, values);
-            return { secondaryContactData: rows };
-        } catch(error) { 
-            console.log(error);
-            return { error };
-        }
+
+    const values = [linkedId, 'secondary', contactId];
+
+    try {
+      const { rows } = await pool.query(query, values);
+      return { secondaryContactData: rows };
+    } catch (error) {
+      console.log(error);
+      return { error };
     }
-
-
-    
-
+  };
 }
